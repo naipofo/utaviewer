@@ -1,6 +1,7 @@
 package com.naipofo.utabrowser.navigation
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.mutableStateOf
@@ -12,10 +13,12 @@ fun <T> NavElement(default: T, content: @Composable (T, NavController<T>) -> Uni
     val controller by remember { mutableStateOf(NavController(default)) }
 
     @Composable
-    fun display() = content(controller.currentBackStackEntry.value, controller)
+    fun display(v: T) = content(v, controller)
     BoxWithConstraints {
         Box(Modifier.fillMaxSize()) {
-            display()
+            Crossfade(targetState = controller.currentBackStackEntry.value) {
+                display(it)
+            }
         }
     }
 }
