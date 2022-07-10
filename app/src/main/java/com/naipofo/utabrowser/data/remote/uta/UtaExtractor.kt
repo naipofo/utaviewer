@@ -1,7 +1,7 @@
 package com.naipofo.utabrowser.data.remote.uta
 
 import com.naipofo.utabrowser.data.model.LyricNode
-import com.naipofo.utabrowser.data.model.LyricPage
+import com.naipofo.utabrowser.data.model.YoutubeVideo
 import com.naipofo.utabrowser.data.remote.uta.response.ExtractedData
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -32,6 +32,12 @@ class UtaExtractor(
                     }
                     else -> LyricNode.LineBreak
                 }
+            },
+            youtubeVideos = doc.select(".youtubeLinks a[data-id]").map {
+                YoutubeVideo(
+                    id = it.attr("data-id"),
+                    title = it.select("p").text()
+                )
             }
         )
     }
