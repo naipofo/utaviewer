@@ -18,7 +18,7 @@ fun AppNavigation() {
         when (current) {
             Destinations.Home -> HomeRoute(
                 showLyric =  { controller.navigate(Destinations.Song(it)) },
-                preformSeach = { controller.navigate(Destinations.SearchResult(it)) }
+                preformSearch = { controller.navigate(Destinations.SearchResult(it)) }
             )
             is Destinations.Song -> SongRoute(current.url)
             is Destinations.SearchResult -> SearchResultRoute(current.query) {

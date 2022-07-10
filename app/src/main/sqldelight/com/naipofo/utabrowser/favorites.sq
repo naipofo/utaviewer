@@ -13,3 +13,9 @@ url = ?;
 selectAll:
 SELECT *
 FROM favoriteLyrics;
+
+isFavorite:
+SELECT EXISTS(
+    SELECT 1 FROM favoriteLyrics
+    WHERE url = ?
+);

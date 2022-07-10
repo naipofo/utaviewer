@@ -18,7 +18,6 @@ import com.naipofo.utabrowser.Database
 import com.naipofo.utabrowser.data.Result
 import com.naipofo.utabrowser.data.model.LyricListing
 import com.naipofo.utabrowser.data.remote.uta.UtaRepository
-import com.naipofo.utabrowser.data.remote.uta.response.LyricElement
 import com.naipofo.utabrowser.ui.LyricTile
 import kotlinx.coroutines.launch
 import org.kodein.di.compose.localDI
@@ -28,7 +27,7 @@ import org.kodein.di.instance
 @Composable
 fun HomeRoute(
     showLyric: (url: String) -> Unit,
-    preformSeach: (query: String) -> Unit
+    preformSearch: (query: String) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val utaRepository: UtaRepository by localDI().instance()
@@ -39,20 +38,28 @@ fun HomeRoute(
         mutableStateOf(null)
     }
 
-    val favoriteLyrics = database.favoritesQueries.selectAll().executeAsList()
+    var favoriteLyrics: List<LyricListing>? = null
 
     var isSearching by remember { mutableStateOf(false) }
-    var seachQuery by remember { mutableStateOf("") }
+    var searchQuery by remember { mutableStateOf("") }
 
     SideEffect {
         scope.launch {
             topLyrics = utaRepository.getTopSongs()
         }
+        scope.launch {
+            favoriteLyrics = database.favoritesQueries.selectAll().executeAsList().mapNotNull {
+                when (val e = utaRepository.getLyricPage(it)) {
+                    is Result.Error -> null
+                    is Result.Success -> e.data
+                }?.listing
+            }
+        }
     }
 
     fun doSearch(){
         isSearching = !isSearching
-        if (seachQuery.trim() != "") preformSeach(seachQuery)
+        if (searchQuery.trim() != "") preformSearch(searchQuery)
     }
 
     Scaffold(
@@ -76,8 +83,8 @@ fun HomeRoute(
                 },
                 actions = {
                     if (isSearching) OutlinedTextField(
-                        value = seachQuery,
-                        onValueChange = { seachQuery = it },
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
                         singleLine = true,
                         label = { Text(text = "Search...") },
                         keyboardActions = KeyboardActions {
@@ -101,12 +108,12 @@ fun HomeRoute(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(innerPadding)
             ) {
-                if (favoriteLyrics.size > 0){
+                if (favoriteLyrics != null && favoriteLyrics!!.isNotEmpty()){
                     item {
                         Text(text = "Favourite", style = MaterialTheme.typography.displaySmall)
                     }
-                    items(favoriteLyrics){
-                        Text(text = it)
+                    items(favoriteLyrics!!){ lyricListing ->
+                        LyricTile(data = lyricListing, onClick = { showLyric(lyricListing.url) })
                     }
                 }
                 item {

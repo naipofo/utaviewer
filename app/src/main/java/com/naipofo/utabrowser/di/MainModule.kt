@@ -3,6 +3,7 @@ package com.naipofo.utabrowser.di
 import android.app.Activity
 import com.naipofo.utabrowser.BuildConfig
 import com.naipofo.utabrowser.Database
+import com.naipofo.utabrowser.data.local.favorites.FavoritesRepository
 import com.naipofo.utabrowser.data.remote.uta.UtaApi
 import com.naipofo.utabrowser.data.remote.uta.UtaExtractor
 import com.naipofo.utabrowser.data.remote.uta.UtaRepository
@@ -23,18 +24,18 @@ val mainModule = DI.Module("main") {
             }
         }
     }
+    bindSingleton {
+        Database(
+            AndroidSqliteDriver(Database.Schema, instance(), "base.db")
+        )
+    }
 
     bindSingleton("UtaKey") { BuildConfig.utakey }
     bindSingleton("UtaDomain") { BuildConfig.utadomain }
 
     bindSingleton { UtaExtractor(instance()) }
     bindSingleton { UtaApi(instance(), instance("UtaKey"), instance("UtaDomain")) }
-
     bindSingleton { UtaRepository(instance(), instance(), instance()) }
 
-    bindSingleton {
-        Database(
-            AndroidSqliteDriver(Database.Schema, instance(), "base.db")
-        )
-    }
+    bindSingleton { FavoritesRepository(instance()) }
 }
