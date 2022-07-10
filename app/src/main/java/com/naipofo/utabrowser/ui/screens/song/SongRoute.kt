@@ -14,8 +14,9 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.naipofo.utabrowser.data.Result
-import com.naipofo.utabrowser.data.remote.uta.ExtractedData
-import com.naipofo.utabrowser.data.remote.uta.LyricNode
+import com.naipofo.utabrowser.data.model.LyricNode
+import com.naipofo.utabrowser.data.model.LyricPage
+import com.naipofo.utabrowser.data.remote.uta.response.ExtractedData
 import com.naipofo.utabrowser.data.remote.uta.UtaRepository
 import kotlinx.coroutines.launch
 import org.kodein.di.compose.localDI
@@ -26,32 +27,32 @@ fun SongRoute(url: String) {
     val scope = rememberCoroutineScope()
     val utaRepository: UtaRepository by localDI().instance()
 
-    var lyricData: Result<ExtractedData>? by remember {
+    var lyricData: Result<LyricPage>? by remember {
         mutableStateOf(null)
     }
 
     SideEffect {
         scope.launch {
-            lyricData = utaRepository.getSongData(url)
+            lyricData = utaRepository.getLyricPage(url)
         }
     }
 
     LazyColumn(Modifier.fillMaxSize()) {
         when (val data = lyricData) {
             is Result.Error -> {
-
-
+                item { Text(text = "Error!:\n\n${data.exception}\n${data.exception.stackTrace}") }
+                throw data.exception
             }
             is Result.Success -> {
                 item {
                     Column {
-                        Text(text = data.data.title, style = MaterialTheme.typography.displayLarge)
-                        Text(text = data.data.artist, style = MaterialTheme.typography.displaySmall)
+                        Text(text = data.data.listing.title, style = MaterialTheme.typography.displayLarge)
+                        Text(text = data.data.listing.artist, style = MaterialTheme.typography.displaySmall)
                     }
                 }
                 val lines: MutableList<List<LyricNode>> = mutableListOf()
                 var l = mutableListOf<LyricNode>()
-                data.data.lyrics.forEach {
+                data.data.text.forEach {
                     if (it is LyricNode.LineBreak) {
                         lines.add(l)
                         l = mutableListOf()

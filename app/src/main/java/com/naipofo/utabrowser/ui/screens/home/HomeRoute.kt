@@ -14,7 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.naipofo.utabrowser.Database
 import com.naipofo.utabrowser.data.Result
+import com.naipofo.utabrowser.data.model.LyricListing
 import com.naipofo.utabrowser.data.remote.uta.UtaRepository
 import com.naipofo.utabrowser.data.remote.uta.response.LyricElement
 import com.naipofo.utabrowser.ui.LyricTile
@@ -31,9 +33,13 @@ fun HomeRoute(
     val scope = rememberCoroutineScope()
     val utaRepository: UtaRepository by localDI().instance()
 
-    var topLyrics: Result<List<LyricElement>>? by remember {
+    val database: Database by localDI().instance()
+
+    var topLyrics: Result<List<LyricListing>>? by remember {
         mutableStateOf(null)
     }
+
+    val favoriteLyrics = database.favoritesQueries.selectAll().executeAsList()
 
     var isSearching by remember { mutableStateOf(false) }
     var seachQuery by remember { mutableStateOf("") }
@@ -80,7 +86,9 @@ fun HomeRoute(
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Search
                         ),
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
                     )
                     IconButton(onClick = { doSearch() }) {
                         Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
@@ -93,8 +101,16 @@ fun HomeRoute(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(innerPadding)
             ) {
+                if (favoriteLyrics.size > 0){
+                    item {
+                        Text(text = "Favourite", style = MaterialTheme.typography.displaySmall)
+                    }
+                    items(favoriteLyrics){
+                        Text(text = it)
+                    }
+                }
                 item {
-
+                    Text(text = "Top Lyrics", style = MaterialTheme.typography.displaySmall)
                 }
                 when (val top = topLyrics) {
                     is Result.Error -> item {

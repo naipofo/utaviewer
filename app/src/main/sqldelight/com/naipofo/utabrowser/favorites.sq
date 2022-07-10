@@ -1,0 +1,15 @@
+CREATE TABLE favoriteLyrics (
+  url TEXT NOT NULL
+);
+
+insert:
+INSERT INTO favoriteLyrics(url)
+VALUES (?);
+
+remove:
+DELETE FROM favoriteLyrics WHERE
+url = ?;
+
+selectAll:
+SELECT *
+FROM favoriteLyrics;

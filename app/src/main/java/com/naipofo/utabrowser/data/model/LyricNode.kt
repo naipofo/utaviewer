@@ -1,13 +1,13 @@
-package com.naipofo.utabrowser.data.remote.uta
+package com.naipofo.utabrowser.data.model
 
-data class ExtractedData(
-    val title: String,
-    val artist: String,
-    val lyrics: List<LyricNode>,
-)
+import kotlinx.serialization.Serializable
 
+@Serializable
 sealed interface LyricNode{
+    @Serializable
     object LineBreak: LyricNode
+    @Serializable
     data class Ruby(val rb: String, val rt: String): LyricNode
+    @Serializable
     data class Text(val string: String): LyricNode
 }

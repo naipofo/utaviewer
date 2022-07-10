@@ -1,6 +1,7 @@
 package com.naipofo.utabrowser.data.remote.uta.response
 
 
+import com.naipofo.utabrowser.data.model.LyricListing
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -19,3 +20,6 @@ data class LyricElement(
     @SerialName("url")
     val url: String
 )
+
+fun LyricElement.toModel() =
+    LyricListing(title = title, artist = artist, image = imageModel.imageUrl, url = url)

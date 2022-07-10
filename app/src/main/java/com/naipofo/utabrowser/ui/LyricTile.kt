@@ -13,10 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.naipofo.utabrowser.data.model.LyricListing
 import com.naipofo.utabrowser.data.remote.uta.response.LyricElement
 
 @Composable
-fun LyricTile(data: LyricElement, onClick: (url: String) -> Unit) {
+fun LyricTile(data: LyricListing, onClick: (url: String) -> Unit) {
     Row(
         Modifier
             .padding(horizontal = 16.dp)
@@ -25,7 +26,7 @@ fun LyricTile(data: LyricElement, onClick: (url: String) -> Unit) {
             .clickable { onClick(data.url) }
     ) {
         AsyncImage(
-            model = data.imageModel.imageUrl,
+            model = data.image,
             contentDescription = null,
             modifier = Modifier
                 .size(75.dp)
@@ -36,9 +37,8 @@ fun LyricTile(data: LyricElement, onClick: (url: String) -> Unit) {
                 .weight(1f)
                 .padding(start = 16.dp)
         ) {
-            Text(text = data.title, style = MaterialTheme.typography.titleSmall)
-            Text(text = data.artist, style = MaterialTheme.typography.labelLarge)
-            Text(text = data.beginning, style = MaterialTheme.typography.labelMedium)
+            Text(text = data.title, style = MaterialTheme.typography.titleLarge)
+            Text(text = data.artist, style = MaterialTheme.typography.titleMedium)
         }
     }
 }

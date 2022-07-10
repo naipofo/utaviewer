@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.naipofo.utabrowser.data.Result
+import com.naipofo.utabrowser.data.model.LyricListing
 import com.naipofo.utabrowser.data.remote.uta.UtaRepository
 import com.naipofo.utabrowser.data.remote.uta.response.LyricElement
 import com.naipofo.utabrowser.ui.LyricTile
@@ -22,7 +23,7 @@ fun SearchResultRoute(
     val scope = rememberCoroutineScope()
     val utaRepository: UtaRepository by localDI().instance()
 
-    var results: Result<List<LyricElement>>? by remember {
+    var results: Result<List<LyricListing>>? by remember {
         mutableStateOf(null)
     }
 

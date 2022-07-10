@@ -1,0 +1,13 @@
+CREATE TABLE pageCache(
+    url TEXT NOT NULL,
+    data TEXT NOT NULL,
+    dateCashed TEXT NOT NULL
+);
+
+insert:
+INSERT INTO pageCache(url, data, dateCashed)
+VALUES (?, ?, DATE());
+
+fetchOne:
+SELECT data FROM pageCache WHERE
+url = ?;
