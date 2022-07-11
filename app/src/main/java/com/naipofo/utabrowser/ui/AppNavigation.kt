@@ -13,6 +13,7 @@ import com.naipofo.utabrowser.navigation.NavElement
 import com.naipofo.utabrowser.navigation.VisualNavElement
 import com.naipofo.utabrowser.ui.screens.favorites.FavoritesRoute
 import com.naipofo.utabrowser.ui.screens.home.HomeRoute
+import com.naipofo.utabrowser.ui.screens.search.SearchRoute
 import com.naipofo.utabrowser.ui.screens.searchresult.SearchResultRoute
 import com.naipofo.utabrowser.ui.screens.settings.SettingsRoute
 import com.naipofo.utabrowser.ui.screens.song.SongRoute
@@ -36,17 +37,31 @@ fun AppNavigation() {
         when (current) {
             Destinations.Home -> HomeRoute(
                 showLyric = { controller.navigate(Destinations.Song(it)) },
-                preformSearch = { controller.navigate(Destinations.SearchResult(it)) }
+                goToSearch = { controller.navigate(Destinations.Search) }
             )
             Destinations.Favorites -> FavoritesRoute(
                 showLyric = { controller.navigate(Destinations.Song(it)) }
             )
             Destinations.Settings -> SettingsRoute()
-            is Destinations.Song -> SongRoute(current.url) { id: String ->
-                context.startActivity(
-                    Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=$id"))
-                )
-            }
+            Destinations.Search -> SearchRoute { controller.navigate(Destinations.SearchResult(it)) }
+            is Destinations.Song -> SongRoute(
+                url = current.url,
+                shareLyric = { url, title ->
+                    context.startActivity(
+                        Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_SUBJECT, title)
+                            putExtra(Intent.EXTRA_TEXT, url)
+                        }
+                    )
+                },
+                openYoutubeVideo = { id: String ->
+                    context.startActivity(
+                        Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=$id"))
+                    )
+                },
+                goBack = { controller.pop() }
+            )
             is Destinations.SearchResult -> SearchResultRoute(current.query) {
                 controller.navigate(
                     Destinations.Song(it)
@@ -60,6 +75,7 @@ sealed interface Destinations {
     object Home : Destinations
     object Favorites : Destinations
     object Settings : Destinations
+    object Search : Destinations
     class Song(val url: String) : Destinations
     class SearchResult(val query: String) : Destinations
 }

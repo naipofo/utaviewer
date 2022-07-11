@@ -3,6 +3,7 @@ package com.naipofo.utabrowser.ui.screens.song
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.selection.DisableSelection
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
@@ -25,7 +26,6 @@ fun LazyListScope.rubyRender(lyrics: List<LyricNode>, sizeMultiplier: Float, sho
 
     val normalSize = 21.sp * sizeMultiplier
     val rubySize = 14.sp * sizeMultiplier
-
     items(lines) {
         FlowRow(
             crossAxisAlignment = FlowCrossAxisAlignment.End
@@ -41,12 +41,14 @@ fun LazyListScope.rubyRender(lyrics: List<LyricNode>, sizeMultiplier: Float, sho
                     is LyricNode.Ruby -> Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        if (showRuby) Text(
-                            text = it.rt,
-                            style = MaterialTheme.typography.bodySmall,
-                            fontSize = rubySize,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f)
-                        )
+                        if (showRuby) DisableSelection {
+                            Text(
+                                text = it.rt,
+                                style = MaterialTheme.typography.bodySmall,
+                                fontSize = rubySize,
+                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = .8f)
+                            )
+                        }
                         Text(
                             text = it.rb,
                             style = MaterialTheme.typography.bodyLarge,

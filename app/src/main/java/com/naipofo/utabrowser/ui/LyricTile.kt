@@ -86,5 +86,5 @@ fun LazyListScope.basicLyricList(
     onClick: (url: String) -> Unit
 ) = itemsIndexed(lyrics) { index, item ->
     LyricTile(data = item, onClick = onClick)
-    if (index < lyrics.lastIndex) LyricTileSeparator()
+    if (index < lyrics.lastIndex) LyricTileSeparator() else Spacer(modifier = Modifier.height(16.dp))
 }

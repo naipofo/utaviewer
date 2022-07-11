@@ -10,3 +10,8 @@ inline fun <T> tryResult(pack: () -> T): Result<T> = try {
 } catch (e: Exception) {
     Result.Error(e)
 }
+
+fun <T> Result<T>.dataOrNull(): T? = when (this) {
+    is Result.Error -> null
+    is Result.Success -> this.data
+}

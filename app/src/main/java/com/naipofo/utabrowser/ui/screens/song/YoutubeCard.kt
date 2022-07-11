@@ -26,7 +26,7 @@ fun YoutubeCard(
             .fillMaxHeight()
             .clickable { onClick() }) {
         AsyncImage(
-            model = "https://i.ytimg.com/vi/${video.id}/mqdefault.jpg",
+            model = video.thumbnailUrl,
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()

@@ -26,8 +26,12 @@ class UtaRepository(
         } else {
             val data = extractor.getPageData(url)
             LyricPage(
-                listing = lastData.firstOrNull { it.url == url }
-                    ?: topSongs!!.first { it.url == url },
+                listing = (lastData.firstOrNull { it.url == url }
+                    ?: topSongs!!.first { it.url == url }).let {
+                    if (it.image.contains("noImage") && data.youtubeVideos.isNotEmpty()) {
+                        it.copy(image = data.youtubeVideos[0].thumbnailUrl)
+                    } else it
+                },
                 text = data.lyrics,
                 youtubeVideos = data.youtubeVideos
             ).also {

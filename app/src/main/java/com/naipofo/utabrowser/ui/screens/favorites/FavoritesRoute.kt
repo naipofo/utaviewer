@@ -2,6 +2,7 @@ package com.naipofo.utabrowser.ui.screens.favorites
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -11,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.naipofo.utabrowser.data.local.favorites.FavoritesRepository
 import com.naipofo.utabrowser.data.model.LyricListing
@@ -34,7 +36,14 @@ fun FavoritesRoute(showLyric: (url: String) -> Unit) {
 
     LazyColumn {
         item {
-            Text(text = "Favourite", style = MaterialTheme.typography.displaySmall)
+            Text(
+                text = "Favorites \uD83C\uDF1F",
+                style = MaterialTheme.typography.displaySmall,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                textAlign = TextAlign.Center
+            )
         }
         when (val data = favoriteLyrics) {
             null -> item {
