@@ -1,6 +1,6 @@
 CREATE TABLE pageCache(
     url TEXT NOT NULL,
-    data TEXT NOT NULL,
+    data BLOB NOT NULL,
     dateCashed TEXT NOT NULL
 );
 

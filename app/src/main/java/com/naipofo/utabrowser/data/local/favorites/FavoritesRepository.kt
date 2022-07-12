@@ -1,7 +1,7 @@
 package com.naipofo.utabrowser.data.local.favorites
 
 import com.naipofo.utabrowser.Database
-import com.naipofo.utabrowser.data.Result
+import com.naipofo.utabrowser.data.dataOrNull
 import com.naipofo.utabrowser.data.model.LyricListing
 import com.naipofo.utabrowser.data.remote.uta.UtaRepository
 
@@ -15,9 +15,6 @@ class FavoritesRepository(
 
     suspend fun getFavorites(): List<LyricListing> =
         database.favoritesQueries.selectAll().executeAsList().mapNotNull {
-            when (val e = utaRepository.getLyricPage(it)) {
-                is Result.Error -> null
-                is Result.Success -> e.data
-            }?.listing
+            utaRepository.getLyricPage(it).dataOrNull()?.listing
         }
 }

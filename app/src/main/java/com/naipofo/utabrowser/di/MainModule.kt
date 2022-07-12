@@ -4,6 +4,7 @@ import android.content.Context
 import com.naipofo.utabrowser.BuildConfig
 import com.naipofo.utabrowser.Database
 import com.naipofo.utabrowser.data.local.favorites.FavoritesRepository
+import com.naipofo.utabrowser.data.local.pageCache.PageCacheRepository
 import com.naipofo.utabrowser.data.local.settings.SettingsRepository
 import com.naipofo.utabrowser.data.remote.uta.UtaApi
 import com.naipofo.utabrowser.data.remote.uta.UtaExtractor
@@ -36,6 +37,8 @@ val mainModule = DI.Module("main") {
 
     bindSingleton("UtaKey") { BuildConfig.utakey }
     bindSingleton("UtaDomain") { BuildConfig.utadomain }
+
+    bindSingleton { PageCacheRepository(instance()) }
 
     bindSingleton { UtaExtractor(instance()) }
     bindSingleton { UtaApi(instance(), instance("UtaKey"), instance("UtaDomain")) }
