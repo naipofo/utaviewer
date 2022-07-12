@@ -4,6 +4,7 @@ import com.naipofo.utabrowser.data.Result
 import com.naipofo.utabrowser.data.local.pageCache.PageCacheRepository
 import com.naipofo.utabrowser.data.model.LyricListing
 import com.naipofo.utabrowser.data.model.LyricPage
+import com.naipofo.utabrowser.data.model.LyricsSearchFilters
 import com.naipofo.utabrowser.data.remote.uta.response.toModel
 import com.naipofo.utabrowser.data.tryResult
 
@@ -12,7 +13,7 @@ class UtaRepository(
     private val extractor: UtaExtractor,
     private val pageCacheRepository: PageCacheRepository
 ) {
-    private var lastString = ""
+    private var lastQuery: LyricsSearchFilters? = null
     private var lastData: List<LyricListing> = listOf()
     private var topSongs: List<LyricListing>? = null
 
@@ -34,10 +35,10 @@ class UtaRepository(
             }
     }
 
-    suspend fun searchSong(title: String): Result<List<LyricListing>> = tryResult {
-        if (lastString == title) return@tryResult lastData
-        lastString = title
-        api.searchByTitle(title).items.map { it.toModel() }.also {
+    suspend fun searchSong(query: LyricsSearchFilters): Result<List<LyricListing>> = tryResult {
+        if (lastQuery == query) return@tryResult lastData
+        lastQuery = query
+        api.searchWithFilters(query).items.map { it.toModel() }.also {
             lastData = it
         }
     }

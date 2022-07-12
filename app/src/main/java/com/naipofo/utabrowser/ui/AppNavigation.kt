@@ -9,8 +9,10 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import com.naipofo.utabrowser.data.model.LyricsSearchFilters
 import com.naipofo.utabrowser.navigation.NavElement
 import com.naipofo.utabrowser.navigation.VisualNavElement
+import com.naipofo.utabrowser.ui.screens.advancedSearch.AdvancedSearchRoute
 import com.naipofo.utabrowser.ui.screens.favorites.FavoritesRoute
 import com.naipofo.utabrowser.ui.screens.home.HomeRoute
 import com.naipofo.utabrowser.ui.screens.search.SearchRoute
@@ -43,7 +45,27 @@ fun AppNavigation() {
                 showLyric = { controller.navigate(Destinations.Song(it)) }
             )
             Destinations.Settings -> SettingsRoute()
-            Destinations.Search -> SearchRoute { controller.navigate(Destinations.SearchResult(it)) }
+            Destinations.Search -> SearchRoute(
+                performSearch = {
+                    controller.navigate(
+                        Destinations.SearchResult(
+                            LyricsSearchFilters(
+                                listOf(
+                                    Pair("title", it)
+                                )
+                            )
+                        )
+                    )
+                },
+                goToAdvanced = { controller.navigate(Destinations.AdvancedSearch) },
+                goBack = { controller.pop() }
+            )
+            Destinations.AdvancedSearch -> AdvancedSearchRoute {
+                controller.absoluteNavigate(Destinations.Home)
+                controller.navigate(
+                    Destinations.SearchResult(it)
+                )
+            }
             is Destinations.Song -> SongRoute(
                 url = current.url,
                 shareLyric = { url, title ->
@@ -76,6 +98,7 @@ sealed interface Destinations {
     object Favorites : Destinations
     object Settings : Destinations
     object Search : Destinations
+    object AdvancedSearch : Destinations
     class Song(val url: String) : Destinations
-    class SearchResult(val query: String) : Destinations
+    class SearchResult(val query: LyricsSearchFilters) : Destinations
 }
