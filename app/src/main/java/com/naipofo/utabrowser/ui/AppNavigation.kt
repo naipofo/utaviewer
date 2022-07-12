@@ -47,15 +47,8 @@ fun AppNavigation() {
             Destinations.Settings -> SettingsRoute()
             Destinations.Search -> SearchRoute(
                 performSearch = {
-                    controller.navigate(
-                        Destinations.SearchResult(
-                            LyricsSearchFilters(
-                                listOf(
-                                    Pair("title", it)
-                                )
-                            )
-                        )
-                    )
+                    controller.absoluteNavigate(Destinations.Home)
+                    controller.navigate(Destinations.SearchResult(it))
                 },
                 goToAdvanced = { controller.navigate(Destinations.AdvancedSearch) },
                 goBack = { controller.pop() }

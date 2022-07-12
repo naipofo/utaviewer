@@ -1,0 +1,13 @@
+CREATE TABLE searchSuggestions(
+    text TEXT NOT NULL UNIQUE,
+    type TEXT NOT NULL
+);
+
+insert:
+INSERT OR IGNORE INTO searchSuggestions(text, type)
+VALUES (?, ?);
+
+getSuggestions:
+SELECT text, type FROM searchSuggestions
+WHERE text LIKE (:text || '%')
+LIMIT 30;

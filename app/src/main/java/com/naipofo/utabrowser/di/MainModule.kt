@@ -5,6 +5,7 @@ import com.naipofo.utabrowser.BuildConfig
 import com.naipofo.utabrowser.Database
 import com.naipofo.utabrowser.data.local.favorites.FavoritesRepository
 import com.naipofo.utabrowser.data.local.pageCache.PageCacheRepository
+import com.naipofo.utabrowser.data.local.searchSuggestions.SearchSuggestionsRepository
 import com.naipofo.utabrowser.data.local.settings.SettingsRepository
 import com.naipofo.utabrowser.data.remote.uta.UtaApi
 import com.naipofo.utabrowser.data.remote.uta.UtaExtractor
@@ -40,9 +41,11 @@ val mainModule = DI.Module("main") {
 
     bindSingleton { PageCacheRepository(instance()) }
 
+    bindSingleton { SearchSuggestionsRepository(instance()) }
+
     bindSingleton { UtaExtractor(instance()) }
     bindSingleton { UtaApi(instance(), instance("UtaKey"), instance("UtaDomain")) }
-    bindSingleton { UtaRepository(instance(), instance(), instance()) }
+    bindSingleton { UtaRepository(instance(), instance(), instance(), instance()) }
 
     bindSingleton { FavoritesRepository(instance(), instance()) }
 

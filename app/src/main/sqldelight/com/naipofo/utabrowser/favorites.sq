@@ -11,7 +11,7 @@ DELETE FROM favoriteLyrics WHERE
 url = ?;
 
 selectAll:
-SELECT *
+SELECT url
 FROM favoriteLyrics;
 
 isFavorite:
